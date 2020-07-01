@@ -2,8 +2,7 @@
 title: "PGBVS-Vignette"
 output: rmarkdown::html_vignette
 author: "Matthew D. Koslovsky and Marina Vannucci"
-package: PGBVS
- vignette: >
+vignette: >
   %\VignetteIndexEntry{PGBVS-Vignette}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
