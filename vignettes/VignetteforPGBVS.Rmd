@@ -1,13 +1,14 @@
 ---
-title: "PGBVS Vignette"
-author: "Matt Koslovsky and Marina Vannucci"
-package: PGBVS
-date: "`r Sys.Date()`"
+title: "PGBVS-Vignette"
 output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{PGBVS Vignette}
-  %\VignetteEngine{knitr::rmarkdown}
+author: "Matthew D. Koslovsky and Marina Vannucci"
+package: PGBVS
+ vignette: >
+  %\VignetteIndexEntry{PGBVS-Vignette}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
 ---
 ```{r , echo = FALSE, warning=FALSE, results='hide',message=FALSE}
 # library(RefManageR)
