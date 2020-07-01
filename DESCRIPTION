@@ -1,11 +1,16 @@
 Package: PGBVS
 Type: Package
-Title: What the package does (short line)
+Title: PGBVS
 Version: 1.0
-Date: 2020-06-30
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
-Imports: Rcpp (>= 1.0.4.6)
+Date: 2019-03-30
+Author: Matt Koslovsky
+Maintainer: Matthew Koslovsky <mkoslovsky12@gmail.com>
+Description: Implements Bayesian variables selection for random effects as well as varying-coefficients using spiked Dirichlet processes for logistic regression models with repeated measures data using Polya-Gamma augmentation for efficient sampling. 
+License: MIT + file LICENSE
+Imports: Rcpp (>= 1.0.1), RcppArmadillo (>= 0.9.300.2.0), mvtnorm (>= 1.0-10), MCMCpack (>= 1.4-4), spikeSlabGAM (>= 1.1-14), FDRSeg (>= 1.0-3), sdols (>= 1.7), mcclust (>= 1.0), glmnet (>= 2.0-16)     
 LinkingTo: Rcpp, RcppArmadillo
+VignetteBuilder: knitr
+Suggests: knitr, rmarkdown, RefManageR
+LazyData: true
+Depends: 
+    R (>= 2.10)
