@@ -9,7 +9,3 @@ bvsPGcpp2 <- function(iterations, thin, prior, DP_beta, DP_kappa, Y, W, subject,
     .Call(`_PGBVS_bvsPGcpp2`, iterations, thin, prior, DP_beta, DP_kappa, Y, W, subject, subject_dems, Ustar, Ustar_dems, Xbar, Z, random_avail, fixed_avail, beta, v, xi, mu, t2, cluster, cluster_count, cluster_beta, vartheta, K, lambda, Gamma, zeta, cluster_K, cluster_count_K, cluster_kappa, sA, V_gamma, gamma_0, m_star, v_star, m_0, v_0, a, b, a_0, b_0, a_g, b_g, a_vartheta, b_vartheta, a_sA, b_sA)
 }
 
-horsePGcpp <- function(iterations, thin, Y, W, subject, subject_dems, Ustar, Ustar_dems, Xbar, Z, beta, sigma_beta, tau_beta, vartheta_beta, A_beta, xi, mu, K, sigma_kappa, tau_kappa, vartheta_kappa, A_kappa, Gamma, zeta, V_gamma, gamma_0, m_0, v_0, tau) {
-    .Call(`_PGBVS_horsePGcpp`, iterations, thin, Y, W, subject, subject_dems, Ustar, Ustar_dems, Xbar, Z, beta, sigma_beta, tau_beta, vartheta_beta, A_beta, xi, mu, K, sigma_kappa, tau_kappa, vartheta_kappa, A_kappa, Gamma, zeta, V_gamma, gamma_0, m_0, v_0, tau)
-}
-
