@@ -2308,3 +2308,251 @@ List bvsPGcpp(
   return output ;
 }
 
+
+// Function :: MCMC algorithm
+// [[Rcpp::export]]
+List bvsPGcpp2(
+    int iterations,             // Number of iterations
+    int thin,                   // How often to thin to make the output less
+    String prior,               // Doesn't have any use at this point but will
+    bool DP_beta,               // Boolean to use DP prior for beta or not
+    bool DP_kappa,              // Boolean to use DP prior for kappa or not 
+    arma::vec Y,                // Y - Vector of outcomes. Indexed ij.
+    arma::mat W,                // W - Matrix of MCMC samples for auxillary variables. Rows indexed ij. Columns indexed by MCMC sample
+    arma::vec subject,          // subject - Vector that indicates which observations come from a subject. Elements are ij
+    arma::vec subject_dems,     // subject_dems - Input vector of dimensions for each subject in the data. Element is equal to the starting indicies for corresponding n. Last term is the number of observations
+    arma::mat Ustar,            // Ustar - Matrix of spline functions. Rows indexed by ij. Columns indexed by sum r_p over p. ( Should be a list if r_p != r_p' )
+    arma::vec Ustar_dems,       // Ustar_dems - Input vector of dimensions for each spline function. Element is equal to starting indicies for corresponding p. Last term is number of columns. Ustar_dems[ 0 ] = 0 and length = P + 1
+    arma::mat Xbar,             // Xbar - Matrix of barX. Rows indexed by ij. Columns indexed by 2P ( x1u, x1, x2u, x2,...xPu, xP )
+    arma::mat Z,                // Z - Matrix of random covariates for each subject. Columns indexed by D. Rows indexed by ij
+    IntegerVector random_avail, // random_avail - Vector including a list of random effects that are selectable ( ie not fixed in or out ). Indexed by D
+    IntegerVector fixed_avail,  // fixed_avail - Vector including a list of fixed effects that are selectable ( ie not fixed in or out ). Indexed by S
+    arma::mat beta,             // beta - Matrix of MCMC samples for beta. Rows indexed by beta_temp. Columns indexed by MCMC sample.
+    arma::mat v,                // v - Matrix of MCMC samples for v. Rows indexed by v_temp. Columns indexed by MCMC sample.
+    arma::mat xi,               // xi - Matrix of MCMC samples for parameter expansion for beta. Rows indexed by xi_temp. Columns indexed by MCMC sample.
+    arma::mat mu,               // mu - Matrix of MCMC samples of means for each xi. Rows indexed by mu_tempp. Columns indexed by MCMC sample.
+    arma::mat t2,               // t2 - Matrix of MCMC samples for t2. Rows indexed by t2_temp. Columns indexed by MCMC sample.
+    arma::mat cluster,          // cluster - Matrix of MCMC samples for beta clusters. Rows indexed by cluster. Columns indexed by MCMC sample.
+    arma::vec cluster_count,    // cluster_count - Vector of counts for each cluster 
+    arma::mat cluster_beta,     // cluster_beta - Vector of beta values associated with each cluster 
+    arma::vec vartheta,         // varthera - Vector of MCMC samplesfor concentration parameter H_0 ( for betas )
+    arma::mat K,                // K - Matrix of MCMC samples for K. Rows indexed by K. Columns indexed by MCMC sample.
+    arma::mat lambda,           // lambda -  Matrix of MCMC samples for lambda. Rows indexed by D. Columns indexed by MCMC sample
+    arma::cube Gamma,           // Gamma - Array of MCMC samples for Gamma. x and y are indexed by Gamma_temp. z indexed by MCMC sample
+    arma::cube zeta,            // zeta - Array of MCMC samples for zeta.  x and y indexed by zeta_temp. z indexed by MCMC sample
+    arma::mat cluster_K,         // cluster_K - Matrix of MCMC samples for kappa clusters. Rows indexed by cluster. Columns indexed by MCMC sample.
+    arma::vec cluster_count_K,   // cluster_count_K - Vector of counts for each kappa cluster 
+    arma::mat cluster_kappa,     // cluster_kappa - Vector of kappa values associated with each cluster 
+    arma::vec sA,                // sA - Vector of MCMC samplesfor concentration parameter W_0 ( for kappas )
+    arma::mat V_gamma,           // V_gamma - Matrix of Gamma variance-covariance priors for MVT normal
+    arma::vec gamma_0,           // gamma_0 - Vector of Gamma mean priors for MVT normal
+    double m_star,               // m_star - double for folded normal proposal mean
+    double v_star,               // v_star - double for folded normal proposal variance
+    double m_0,                  // m_0 - double for folded normal prior mean
+    double v_0,                  // v_0 - double for folded normal prior variance
+    double a,                    // a - double for beta-binomial prior hyperparameter
+    double b,                    // b - double for beta-binomial prior hyperparameter
+    double a_0,                  // a_0 - double hyperparameter for t2
+    double b_0,                  // b_0 - double hyperparameter for t2
+    double a_g,                  // a_g - double hyperparameter for g
+    double b_g,                  // b_g - double hyperparameter for g
+    double a_vartheta,           // a_vartheta - double hyperparameter for vartheta
+    double b_vartheta,           // b_vartheta - double hyperparameter for vartheta
+    double a_sA,                 // a_sA - double hyperparameter for sA
+    double b_sA                  // b_sA - double hyperparameter for sA
+){
+  
+  // Initiate memory for List updates
+  List return_rescaled( 2 );
+  
+  // Set temporary data to enable thinning
+  arma::vec W_temp = W.col( 0 );            // W_temp - Vector of current auxillary parameters. Indexed by ij.
+  arma::vec beta_temp = beta.col( 0 );      // beta_temp - Vector of coefficients for fixed effects (includes terms forced into model). Elements indexed by 3P. B*_p,B^0_p,B_p0,...
+  arma::vec v_temp = v.col( 0 );            // v_temp - Vector of inclusion indicators for fixed effects (includes terms forced into model). Elements indexed by 3P.
+  arma::vec xi_temp = xi.col( 0 );          // xi_temp - Vector of parameter expansion for beta. Elements indexed by sum r_p over p.
+  arma::vec mu_temp = mu.col( 0 );          // mu_temp - Vector of means for each xi. Elements indexed by sum r_p over p.
+  arma::vec t2_temp = t2.col( 0 );          // t2_temp - Vector of variances for fixed effects (includes terms forced into model). Elements indexed by 3P.
+  arma::vec K_temp = K.col( 0 );            // K_temp - Vector of coefficients for random effects (includes terms forced into model). Elements indexed by D.
+  arma::vec lambda_temp = lambda.col( 0 );  // lambda_temp - Indicator vector for random effect inclusion. Indexed by D.
+  arma::mat Gamma_temp = Gamma.slice( 0 );  // Gamma_temp - Lower trianglular matrix for random effects. Columns and rows indexed by D.
+  arma::mat zeta_temp = zeta.slice( 0 );    // zeta_temp - Matrix of random effects for each subject. Columns indexed by D. Rows indexed by i.
+  arma::vec cluster_temp = cluster.col( 0 );// cluster_temp - Cluster assignement for betas. Indexed by S
+  arma::vec cluster_count_temp = cluster_count; // cluster_count_temp - Vector of counts for beta clusters. Indexed by S. 
+  arma::vec cluster_beta_temp = cluster_beta.col( 0 );    // cluster_beta_temp - Beta values for each cluster. Indexed by S.  
+  arma::vec cluster_K_temp = cluster_K.col( 0 );         // cluster_K_temp - Cluster assignement for kappas. Indexed by D.
+  double vartheta_temp = vartheta[ 0 ];                  // vartheta_temp - Concentration parameter for H_0
+  arma::vec cluster_count_K_temp = cluster_count_K;       // cluster_count_K_temp - Vector of counts for kappa clusters. Indexed by D. 
+  arma::vec cluster_kappa_temp = cluster_kappa.col( 0 );  // cluster_kappa_temp - Kappa values for each cluster. Indexed by D.  
+  double sA_temp = sA[ 0 ];                               // sA_temp - Concentration parameter for W_0
+  
+  // Looping over the number of iterations specified by user
+  for( int iter = 0; iter < iterations; ++iter ){
+    
+    // Update W
+    W_temp = help::update_W( Ustar, xi_temp, Xbar, Ustar_dems, beta_temp, xi_temp, Z, K_temp, Gamma_temp, zeta_temp, subject );
+    
+    // Update beta and v 
+    if( DP_beta ){ // Update DP 
+      
+      // Update beta cluster assignments 
+      
+      List return_cluster_beta_DP( 4 );
+      return_cluster_beta_DP = help::cluster_beta_cpp( cluster_temp, cluster_count_temp, cluster_beta_temp, vartheta_temp, beta_temp, v_temp, Y, W_temp, Ustar, Xbar, Ustar_dems, xi_temp, Z, K_temp, Gamma_temp, zeta_temp, subject, t2_temp, subject_dems, mu_temp  );
+      
+      cluster_temp = as<arma::vec>( return_cluster_beta_DP[ 0 ] );
+      cluster_count_temp = as<arma::vec>( return_cluster_beta_DP[ 1 ] );
+      cluster_beta_temp = as<arma::vec>( return_cluster_beta_DP[ 2 ] );
+      beta_temp = as<arma::vec>( return_cluster_beta_DP[ 3 ] );
+      
+      // Between beta DP
+      // List return_between_beta_DP( 5 );
+      // return_between_beta_DP = help::between_step_beta_DP( cluster_temp, cluster_count_temp, cluster_beta_temp, vartheta_temp, Y, W_temp, beta_temp, v_temp, t2_temp, Ustar, Xbar, Ustar_dems, xi_temp, Z,K_temp,fixed_avail,Gamma_temp,zeta_temp,subject,a,b );
+      // 
+      // beta_temp = as<arma::vec>( return_between_beta_DP[ 0 ] );
+      // v_temp = as<arma::vec>( return_between_beta_DP[ 1 ] );
+      // cluster_temp = as<arma::vec>( return_between_beta_DP[ 2 ] );
+      // cluster_count_temp = as<arma::vec>( return_between_beta_DP[ 3 ] );
+      // cluster_beta_temp = as<arma::vec>( return_between_beta_DP[ 4 ] );
+      // 
+      // Within beta DP 
+      List return_within_beta_DP( 2 );
+      return_within_beta_DP = help::within_beta_DP( cluster_temp, cluster_count_temp, cluster_beta_temp, vartheta_temp, Y, W_temp, subject, beta_temp, t2_temp, v_temp, Ustar, Xbar, Ustar_dems, xi_temp, Z, K_temp, Gamma_temp, zeta_temp, subject_dems, mu_temp);
+      
+      beta_temp = as<arma::vec>( return_within_beta_DP[ 0 ] );
+      cluster_beta_temp = as<arma::vec>( return_within_beta_DP[ 1 ] );
+      
+      // Update vartheta 
+      vartheta_temp = help::update_vartheta( vartheta_temp, v_temp, cluster_beta_temp, a_vartheta, b_vartheta );
+      
+      
+    }else{ // Not DP but can take flexible inclusion priors in the future 
+      
+      // Between beta 
+      if( prior == "BB" ){
+        //   List return_between_beta = help::between_step_beta( Y, W_temp, beta_temp, v_temp, t2_temp, Ustar, Xbar, Ustar_dems, xi_temp, Z, K_temp, fixed_avail, Gamma_temp, zeta_temp, subject, a, b );
+        //   beta_temp = as<arma::vec>( return_between_beta[ 0 ] );
+        //   v_temp = as<arma::vec>( return_between_beta[ 1 ] );
+      }
+      
+      // Within beta 
+      beta_temp = help::within_beta( Y, W_temp, subject, beta_temp, t2_temp, v_temp, Ustar, Xbar, Ustar_dems, xi_temp, Z, K_temp, Gamma_temp, zeta_temp, subject_dems, mu_temp);
+      
+    }
+    
+    // Update xi
+    xi_temp = help::update_xi( Y, W_temp, subject, beta_temp, Ustar, Xbar, Ustar_dems, xi_temp, Z, K_temp, Gamma_temp, zeta_temp, subject_dems, mu_temp);
+    
+    // Rescale
+    return_rescaled = help::rescaled( beta_temp, xi_temp, Ustar_dems);
+    beta_temp = as<arma::vec>( return_rescaled[ 0 ] );
+    xi_temp = as<arma::vec>( return_rescaled[ 1 ] );
+    
+    // Update mu
+    mu_temp = help::update_mu_rp( xi_temp );
+    
+    // Update t2 if not DP
+    if( !DP_beta ){
+      t2_temp = help::update_t2_s( beta_temp, a_0, b_0 );
+    }
+    
+    // Update K and lambda 
+    if( DP_kappa ){ // Update DP
+      
+      // Update kappa cluster assignments 
+      List return_cluster_kappa_DP( 4 );
+      return_cluster_kappa_DP = help::cluster_kappa_cpp( cluster_K_temp, cluster_count_K_temp, cluster_kappa_temp, sA_temp, beta_temp, v_temp, Y, W_temp, Ustar, Xbar, Ustar_dems, xi_temp, Z, K_temp, Gamma_temp, lambda_temp, zeta_temp, subject, t2_temp, subject_dems, mu_temp, m_star, v_star, m_0, v_0  );
+      
+      cluster_K_temp = as<arma::vec>( return_cluster_kappa_DP[ 0 ] );
+      cluster_count_K_temp = as<arma::vec>( return_cluster_kappa_DP[ 1 ] );
+      cluster_kappa_temp = as<arma::vec>( return_cluster_kappa_DP[ 2 ] );
+      K_temp = as<arma::vec>( return_cluster_kappa_DP[ 3 ] );
+      
+      // Between kappa DP 
+      // List return_between_kappa_DP( 5 );
+      // return_between_kappa_DP = help::between_step_K_DP( cluster_K_temp, cluster_count_K_temp, cluster_kappa_temp, sA_temp, Y, W_temp, beta_temp, Ustar, Xbar, Ustar_dems, xi_temp, Z, K_temp, lambda_temp, random_avail, Gamma_temp, zeta_temp, subject, a, b, m_star, v_star, m_0, v_0 );
+      // 
+      // K_temp = as<arma::vec>( return_between_kappa_DP[ 0 ] );
+      // lambda_temp = as<arma::vec>( return_between_kappa_DP[ 1 ] );
+      // cluster_K_temp = as<arma::vec>( return_between_kappa_DP[ 2 ] );
+      // cluster_count_K_temp = as<arma::vec>( return_between_kappa_DP[ 3 ] );
+      // cluster_kappa_temp = as<arma::vec>( return_between_kappa_DP[ 4 ] );
+      // 
+      // Within kappa DP 
+      List return_within_kappa_DP( 2 );
+      return_within_kappa_DP =  help::within_step_K_DP( cluster_K_temp, cluster_count_K_temp, cluster_kappa_temp, sA_temp, Y, subject, W_temp, beta_temp, Ustar, Xbar, Ustar_dems, xi_temp, Z, K_temp, lambda_temp, Gamma_temp, zeta_temp, m_0, v_0 );
+      
+      K_temp = as<arma::vec>( return_within_kappa_DP[ 0 ] );
+      cluster_kappa_temp = as<arma::vec>( return_within_kappa_DP[ 1 ] );
+      
+      // Update sA
+      sA_temp = help::update_sA( sA_temp, lambda_temp, cluster_kappa_temp, a_sA, b_sA );
+      
+      
+    }else{  // Not DP but can take flexible inclusion priors in the future 
+      
+      // Between K 
+      // List return_between_K( 2 );
+      // return_between_K = help::between_step_K( Y, W_temp, beta_temp, Ustar, Xbar, Ustar_dems, xi_temp, Z, K_temp, lambda_temp, random_avail, Gamma_temp, zeta_temp, subject, a, b, m_star, v_star, m_0, v_0 );
+      // K_temp = as<arma::vec>( return_between_K[ 0 ] );
+      // lambda_temp = as<arma::vec>( return_between_K[ 1 ] );
+      // 
+      // Within K 
+      K_temp = help::within_step_K( Y, subject, W_temp, beta_temp, Ustar, Xbar, Ustar_dems, xi_temp, Z, K_temp, lambda_temp, Gamma_temp, zeta_temp, m_0, v_0 );
+      
+    }   
+    //Update Gamma
+    Gamma_temp = help::update_Gamma( Y, W_temp, beta_temp, Ustar, Xbar, Ustar_dems, xi_temp, Z, K_temp, zeta_temp, lambda_temp, V_gamma, gamma_0, subject);
+    
+    // Update zeta
+    zeta_temp = help::update_zeta( Y, W_temp, beta_temp, Ustar, Xbar, Ustar_dems, xi_temp, Z, K_temp, Gamma_temp, subject_dems );
+    
+    // Set the starting values for the next iteration
+    if( ( iter + 1 ) % thin == 0 ){
+      W.col( ( iter + 1 )/thin - 1 ) = W_temp;            // W_temp - Vector of current auxillary parameters. Indexed by ij.
+      beta.col( ( iter + 1 )/thin - 1 ) = beta_temp;      // beta_temp - Vector of coefficients for fixed effects (includes terms forced into model). Elements indexed by 3P. B*_p,B^0_p,B_p0,...
+      v.col( ( iter + 1 )/thin - 1 ) = v_temp;            // v_temp - Vector of inclusion indicators for fixed effects (includes terms forced into model). Elements indexed by 3P.
+      xi.col( ( iter + 1 )/thin - 1 ) = xi_temp;          // xi_temp - Vector of parameter expansion for beta. Elements indexed by sum r_p over p.
+      mu.col( ( iter + 1 )/thin - 1 ) = mu_temp;          // mu_temp - Vector of means for each xi. Elements indexed by sum r_p over p.
+      t2.col( ( iter + 1 )/thin - 1 ) = t2_temp;          // t2_temp - Vector of variances for fixed effects (includes terms forced into model). Elements indexed by 3P.
+      K.col( ( iter + 1 )/thin - 1 ) = K_temp;            // K_temp - Vector of coefficients for random effects (includes terms forced into model). Elements indexed by D.
+      lambda.col( ( iter + 1 )/thin - 1 ) = lambda_temp;  // lambda_temp - Indicator vector for random effect inclusion. Indexed by D.
+      Gamma.slice( ( iter + 1 )/thin - 1 ) = Gamma_temp;  // Gamma_temp - Lower trianglular matrix for random effects. Columns and rows indexed by D.
+      zeta.slice( ( iter + 1 )/thin - 1 ) = zeta_temp;    // zeta_temp - Matrix of random effects for each subject. Columns indexed by D. Rows indexed by i.
+      cluster.col( ( iter + 1 )/thin - 1 ) = cluster_temp;            // cluster_temp - Cluster assignement for betas. Indexed by S
+      cluster_beta.col( ( iter + 1 )/thin - 1 ) = cluster_beta_temp;  // cluster_beta_temp - Beta values for each cluster. Indexed by S.  
+      vartheta[ ( iter + 1 )/thin - 1 ] = vartheta_temp;                // vartheta - Concentration parameter for H
+      cluster_K.col( ( iter + 1 )/thin - 1 ) = cluster_K_temp;            // cluster_K_temp - Cluster assignement for kappas. Indexed by D.
+      cluster_kappa.col( ( iter + 1 )/thin - 1 ) = cluster_kappa_temp;  // cluster_kappa_temp - Kappa values for each cluster. Indexed by D.  
+      sA[ ( iter + 1 )/thin - 1 ] = sA_temp;                              // sA - Concentration parameter for W
+    }
+    
+    // Print out progress
+    double printer = iter % 50;
+    
+    if( printer == 0 ){
+      Rcpp::Rcout << "Iteration = " << iter << std::endl;
+    }
+  }
+  
+  // Return output
+  List output( 16 );
+  output[ 0 ] = W;
+  output[ 1 ] = beta;
+  output[ 2 ] = v;
+  output[ 3 ] = xi;
+  output[ 4 ] = mu;
+  output[ 5 ] = t2;
+  output[ 6 ] = K;
+  output[ 7 ] = lambda;
+  output[ 8 ] = Gamma;
+  output[ 9 ] = zeta;
+  output[ 10 ] = cluster;
+  output[ 11 ] = cluster_beta; 
+  output[ 12 ] = vartheta;
+  output[ 13 ] = cluster_K;
+  output[ 14 ] = cluster_kappa; 
+  output[ 15 ] = sA; 
+  
+  return output ;
+}
+

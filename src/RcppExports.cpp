@@ -7,8 +7,8 @@
 using namespace Rcpp;
 
 // bvsPGcpp
-List bvsPGcpp(int iterations, int thin, String prior, bool DP_beta, bool DP_kappa, arma::vec Y, arma::mat W, arma::vec subject, arma::vec subject_dems, arma::mat Ustar, arma::vec Ustar_dems, arma::mat Xbar, arma::mat Z, IntegerVector random_avail, IntegerVector fixed_avail, arma::mat beta, arma::mat v, arma::mat xi, arma::mat mu, arma::mat t2, arma::mat cluster, arma::vec cluster_count, arma::mat cluster_beta, arma::vec vartheta, arma::mat K, arma::mat lambda, arma::cube Gamma, arma::cube zeta, arma::mat cluster_K, arma::vec cluster_count_K, arma::mat cluster_kappa, arma::vec sA, arma::mat V_gamma, arma::vec gamma_0, double m_star, double v_star, double m_0, double v_0, double a, double b, double a_K, double b_K, double a_0, double b_0, double a_vartheta, double b_vartheta, double a_sA, double b_sA);
-RcppExport SEXP _PGBVS_bvsPGcpp(SEXP iterationsSEXP, SEXP thinSEXP, SEXP priorSEXP, SEXP DP_betaSEXP, SEXP DP_kappaSEXP, SEXP YSEXP, SEXP WSEXP, SEXP subjectSEXP, SEXP subject_demsSEXP, SEXP UstarSEXP, SEXP Ustar_demsSEXP, SEXP XbarSEXP, SEXP ZSEXP, SEXP random_availSEXP, SEXP fixed_availSEXP, SEXP betaSEXP, SEXP vSEXP, SEXP xiSEXP, SEXP muSEXP, SEXP t2SEXP, SEXP clusterSEXP, SEXP cluster_countSEXP, SEXP cluster_betaSEXP, SEXP varthetaSEXP, SEXP KSEXP, SEXP lambdaSEXP, SEXP GammaSEXP, SEXP zetaSEXP, SEXP cluster_KSEXP, SEXP cluster_count_KSEXP, SEXP cluster_kappaSEXP, SEXP sASEXP, SEXP V_gammaSEXP, SEXP gamma_0SEXP, SEXP m_starSEXP, SEXP v_starSEXP, SEXP m_0SEXP, SEXP v_0SEXP, SEXP aSEXP, SEXP bSEXP, SEXP a_KSEXP, SEXP b_KSEXP, SEXP a_0SEXP, SEXP b_0SEXP, SEXP a_varthetaSEXP, SEXP b_varthetaSEXP, SEXP a_sASEXP, SEXP b_sASEXP) {
+List bvsPGcpp(int iterations, int thin, String prior, bool DP_beta, bool DP_kappa, arma::vec Y, arma::mat W, arma::vec subject, arma::vec subject_dems, arma::mat Ustar, arma::vec Ustar_dems, arma::mat Xbar, arma::mat Z, IntegerVector random_avail, IntegerVector fixed_avail, arma::mat beta, arma::mat v, arma::mat xi, arma::mat mu, arma::mat t2, arma::mat cluster, arma::vec cluster_count, arma::mat cluster_beta, arma::vec vartheta, arma::mat K, arma::mat lambda, arma::cube Gamma, arma::cube zeta, arma::mat cluster_K, arma::vec cluster_count_K, arma::mat cluster_kappa, arma::vec sA, arma::mat V_gamma, arma::vec gamma_0, double m_star, double v_star, double m_0, double v_0, double a, double b, double a_0, double b_0, double a_g, double b_g, double a_vartheta, double b_vartheta, double a_sA, double b_sA);
+RcppExport SEXP _PGBVS_bvsPGcpp(SEXP iterationsSEXP, SEXP thinSEXP, SEXP priorSEXP, SEXP DP_betaSEXP, SEXP DP_kappaSEXP, SEXP YSEXP, SEXP WSEXP, SEXP subjectSEXP, SEXP subject_demsSEXP, SEXP UstarSEXP, SEXP Ustar_demsSEXP, SEXP XbarSEXP, SEXP ZSEXP, SEXP random_availSEXP, SEXP fixed_availSEXP, SEXP betaSEXP, SEXP vSEXP, SEXP xiSEXP, SEXP muSEXP, SEXP t2SEXP, SEXP clusterSEXP, SEXP cluster_countSEXP, SEXP cluster_betaSEXP, SEXP varthetaSEXP, SEXP KSEXP, SEXP lambdaSEXP, SEXP GammaSEXP, SEXP zetaSEXP, SEXP cluster_KSEXP, SEXP cluster_count_KSEXP, SEXP cluster_kappaSEXP, SEXP sASEXP, SEXP V_gammaSEXP, SEXP gamma_0SEXP, SEXP m_starSEXP, SEXP v_starSEXP, SEXP m_0SEXP, SEXP v_0SEXP, SEXP aSEXP, SEXP bSEXP, SEXP a_0SEXP, SEXP b_0SEXP, SEXP a_gSEXP, SEXP b_gSEXP, SEXP a_varthetaSEXP, SEXP b_varthetaSEXP, SEXP a_sASEXP, SEXP b_sASEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -52,21 +52,167 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type v_0(v_0SEXP);
     Rcpp::traits::input_parameter< double >::type a(aSEXP);
     Rcpp::traits::input_parameter< double >::type b(bSEXP);
-    Rcpp::traits::input_parameter< double >::type a_K(a_KSEXP);
-    Rcpp::traits::input_parameter< double >::type b_K(b_KSEXP);
     Rcpp::traits::input_parameter< double >::type a_0(a_0SEXP);
     Rcpp::traits::input_parameter< double >::type b_0(b_0SEXP);
+    Rcpp::traits::input_parameter< double >::type a_g(a_gSEXP);
+    Rcpp::traits::input_parameter< double >::type b_g(b_gSEXP);
     Rcpp::traits::input_parameter< double >::type a_vartheta(a_varthetaSEXP);
     Rcpp::traits::input_parameter< double >::type b_vartheta(b_varthetaSEXP);
     Rcpp::traits::input_parameter< double >::type a_sA(a_sASEXP);
     Rcpp::traits::input_parameter< double >::type b_sA(b_sASEXP);
-    rcpp_result_gen = Rcpp::wrap(bvsPGcpp(iterations, thin, prior, DP_beta, DP_kappa, Y, W, subject, subject_dems, Ustar, Ustar_dems, Xbar, Z, random_avail, fixed_avail, beta, v, xi, mu, t2, cluster, cluster_count, cluster_beta, vartheta, K, lambda, Gamma, zeta, cluster_K, cluster_count_K, cluster_kappa, sA, V_gamma, gamma_0, m_star, v_star, m_0, v_0, a, b, a_K, b_K, a_0, b_0, a_vartheta, b_vartheta, a_sA, b_sA));
+    rcpp_result_gen = Rcpp::wrap(bvsPGcpp(iterations, thin, prior, DP_beta, DP_kappa, Y, W, subject, subject_dems, Ustar, Ustar_dems, Xbar, Z, random_avail, fixed_avail, beta, v, xi, mu, t2, cluster, cluster_count, cluster_beta, vartheta, K, lambda, Gamma, zeta, cluster_K, cluster_count_K, cluster_kappa, sA, V_gamma, gamma_0, m_star, v_star, m_0, v_0, a, b, a_0, b_0, a_g, b_g, a_vartheta, b_vartheta, a_sA, b_sA));
+    return rcpp_result_gen;
+END_RCPP
+}
+// bvsPGcpp2
+List bvsPGcpp2(int iterations, int thin, String prior, bool DP_beta, bool DP_kappa, arma::vec Y, arma::mat W, arma::vec subject, arma::vec subject_dems, arma::mat Ustar, arma::vec Ustar_dems, arma::mat Xbar, arma::mat Z, IntegerVector random_avail, IntegerVector fixed_avail, arma::mat beta, arma::mat v, arma::mat xi, arma::mat mu, arma::mat t2, arma::mat cluster, arma::vec cluster_count, arma::mat cluster_beta, arma::vec vartheta, arma::mat K, arma::mat lambda, arma::cube Gamma, arma::cube zeta, arma::mat cluster_K, arma::vec cluster_count_K, arma::mat cluster_kappa, arma::vec sA, arma::mat V_gamma, arma::vec gamma_0, double m_star, double v_star, double m_0, double v_0, double a, double b, double a_0, double b_0, double a_g, double b_g, double a_vartheta, double b_vartheta, double a_sA, double b_sA);
+RcppExport SEXP _PGBVS_bvsPGcpp2(SEXP iterationsSEXP, SEXP thinSEXP, SEXP priorSEXP, SEXP DP_betaSEXP, SEXP DP_kappaSEXP, SEXP YSEXP, SEXP WSEXP, SEXP subjectSEXP, SEXP subject_demsSEXP, SEXP UstarSEXP, SEXP Ustar_demsSEXP, SEXP XbarSEXP, SEXP ZSEXP, SEXP random_availSEXP, SEXP fixed_availSEXP, SEXP betaSEXP, SEXP vSEXP, SEXP xiSEXP, SEXP muSEXP, SEXP t2SEXP, SEXP clusterSEXP, SEXP cluster_countSEXP, SEXP cluster_betaSEXP, SEXP varthetaSEXP, SEXP KSEXP, SEXP lambdaSEXP, SEXP GammaSEXP, SEXP zetaSEXP, SEXP cluster_KSEXP, SEXP cluster_count_KSEXP, SEXP cluster_kappaSEXP, SEXP sASEXP, SEXP V_gammaSEXP, SEXP gamma_0SEXP, SEXP m_starSEXP, SEXP v_starSEXP, SEXP m_0SEXP, SEXP v_0SEXP, SEXP aSEXP, SEXP bSEXP, SEXP a_0SEXP, SEXP b_0SEXP, SEXP a_gSEXP, SEXP b_gSEXP, SEXP a_varthetaSEXP, SEXP b_varthetaSEXP, SEXP a_sASEXP, SEXP b_sASEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type iterations(iterationsSEXP);
+    Rcpp::traits::input_parameter< int >::type thin(thinSEXP);
+    Rcpp::traits::input_parameter< String >::type prior(priorSEXP);
+    Rcpp::traits::input_parameter< bool >::type DP_beta(DP_betaSEXP);
+    Rcpp::traits::input_parameter< bool >::type DP_kappa(DP_kappaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type W(WSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type subject(subjectSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type subject_dems(subject_demsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Ustar(UstarSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type Ustar_dems(Ustar_demsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Xbar(XbarSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type random_avail(random_availSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type fixed_avail(fixed_availSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type v(vSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type t2(t2SEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type cluster(clusterSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type cluster_count(cluster_countSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type cluster_beta(cluster_betaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type vartheta(varthetaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type K(KSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type Gamma(GammaSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type zeta(zetaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type cluster_K(cluster_KSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type cluster_count_K(cluster_count_KSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type cluster_kappa(cluster_kappaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type sA(sASEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type V_gamma(V_gammaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type gamma_0(gamma_0SEXP);
+    Rcpp::traits::input_parameter< double >::type m_star(m_starSEXP);
+    Rcpp::traits::input_parameter< double >::type v_star(v_starSEXP);
+    Rcpp::traits::input_parameter< double >::type m_0(m_0SEXP);
+    Rcpp::traits::input_parameter< double >::type v_0(v_0SEXP);
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< double >::type b(bSEXP);
+    Rcpp::traits::input_parameter< double >::type a_0(a_0SEXP);
+    Rcpp::traits::input_parameter< double >::type b_0(b_0SEXP);
+    Rcpp::traits::input_parameter< double >::type a_g(a_gSEXP);
+    Rcpp::traits::input_parameter< double >::type b_g(b_gSEXP);
+    Rcpp::traits::input_parameter< double >::type a_vartheta(a_varthetaSEXP);
+    Rcpp::traits::input_parameter< double >::type b_vartheta(b_varthetaSEXP);
+    Rcpp::traits::input_parameter< double >::type a_sA(a_sASEXP);
+    Rcpp::traits::input_parameter< double >::type b_sA(b_sASEXP);
+    rcpp_result_gen = Rcpp::wrap(bvsPGcpp2(iterations, thin, prior, DP_beta, DP_kappa, Y, W, subject, subject_dems, Ustar, Ustar_dems, Xbar, Z, random_avail, fixed_avail, beta, v, xi, mu, t2, cluster, cluster_count, cluster_beta, vartheta, K, lambda, Gamma, zeta, cluster_K, cluster_count_K, cluster_kappa, sA, V_gamma, gamma_0, m_star, v_star, m_0, v_0, a, b, a_0, b_0, a_g, b_g, a_vartheta, b_vartheta, a_sA, b_sA));
+    return rcpp_result_gen;
+END_RCPP
+}
+// horsePGcpp
+List horsePGcpp(int iterations, int thin, arma::vec Y, arma::mat W, arma::vec subject, arma::vec subject_dems, arma::mat Ustar, arma::vec Ustar_dems, arma::mat Xbar, arma::mat Z, arma::mat beta, arma::mat sigma_beta, arma::vec tau_beta, arma::mat vartheta_beta, arma::vec A_beta, arma::mat xi, arma::mat mu, arma::mat K, arma::mat sigma_kappa, arma::vec tau_kappa, arma::mat vartheta_kappa, arma::vec A_kappa, arma::cube Gamma, arma::cube zeta, arma::mat V_gamma, arma::vec gamma_0, double m_0, double v_0, double tau);
+RcppExport SEXP _PGBVS_horsePGcpp(SEXP iterationsSEXP, SEXP thinSEXP, SEXP YSEXP, SEXP WSEXP, SEXP subjectSEXP, SEXP subject_demsSEXP, SEXP UstarSEXP, SEXP Ustar_demsSEXP, SEXP XbarSEXP, SEXP ZSEXP, SEXP betaSEXP, SEXP sigma_betaSEXP, SEXP tau_betaSEXP, SEXP vartheta_betaSEXP, SEXP A_betaSEXP, SEXP xiSEXP, SEXP muSEXP, SEXP KSEXP, SEXP sigma_kappaSEXP, SEXP tau_kappaSEXP, SEXP vartheta_kappaSEXP, SEXP A_kappaSEXP, SEXP GammaSEXP, SEXP zetaSEXP, SEXP V_gammaSEXP, SEXP gamma_0SEXP, SEXP m_0SEXP, SEXP v_0SEXP, SEXP tauSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type iterations(iterationsSEXP);
+    Rcpp::traits::input_parameter< int >::type thin(thinSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type W(WSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type subject(subjectSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type subject_dems(subject_demsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Ustar(UstarSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type Ustar_dems(Ustar_demsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Xbar(XbarSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sigma_beta(sigma_betaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type tau_beta(tau_betaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type vartheta_beta(vartheta_betaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type A_beta(A_betaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type K(KSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type sigma_kappa(sigma_kappaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type tau_kappa(tau_kappaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type vartheta_kappa(vartheta_kappaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type A_kappa(A_kappaSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type Gamma(GammaSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type zeta(zetaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type V_gamma(V_gammaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type gamma_0(gamma_0SEXP);
+    Rcpp::traits::input_parameter< double >::type m_0(m_0SEXP);
+    Rcpp::traits::input_parameter< double >::type v_0(v_0SEXP);
+    Rcpp::traits::input_parameter< double >::type tau(tauSEXP);
+    rcpp_result_gen = Rcpp::wrap(horsePGcpp(iterations, thin, Y, W, subject, subject_dems, Ustar, Ustar_dems, Xbar, Z, beta, sigma_beta, tau_beta, vartheta_beta, A_beta, xi, mu, K, sigma_kappa, tau_kappa, vartheta_kappa, A_kappa, Gamma, zeta, V_gamma, gamma_0, m_0, v_0, tau));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rcpparma_hello_world
+arma::mat rcpparma_hello_world();
+RcppExport SEXP _PGBVS_rcpparma_hello_world() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(rcpparma_hello_world());
+    return rcpp_result_gen;
+END_RCPP
+}
+// rcpparma_outerproduct
+arma::mat rcpparma_outerproduct(const arma::colvec& x);
+RcppExport SEXP _PGBVS_rcpparma_outerproduct(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::colvec& >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(rcpparma_outerproduct(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rcpparma_innerproduct
+double rcpparma_innerproduct(const arma::colvec& x);
+RcppExport SEXP _PGBVS_rcpparma_innerproduct(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::colvec& >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(rcpparma_innerproduct(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rcpparma_bothproducts
+Rcpp::List rcpparma_bothproducts(const arma::colvec& x);
+RcppExport SEXP _PGBVS_rcpparma_bothproducts(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::colvec& >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(rcpparma_bothproducts(x));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
     {"_PGBVS_bvsPGcpp", (DL_FUNC) &_PGBVS_bvsPGcpp, 48},
+    {"_PGBVS_bvsPGcpp2", (DL_FUNC) &_PGBVS_bvsPGcpp2, 48},
+    {"_PGBVS_horsePGcpp", (DL_FUNC) &_PGBVS_horsePGcpp, 29},
+    {"_PGBVS_rcpparma_hello_world", (DL_FUNC) &_PGBVS_rcpparma_hello_world, 0},
+    {"_PGBVS_rcpparma_outerproduct", (DL_FUNC) &_PGBVS_rcpparma_outerproduct, 1},
+    {"_PGBVS_rcpparma_innerproduct", (DL_FUNC) &_PGBVS_rcpparma_innerproduct, 1},
+    {"_PGBVS_rcpparma_bothproducts", (DL_FUNC) &_PGBVS_rcpparma_bothproducts, 1},
     {NULL, NULL, 0}
 };
 
