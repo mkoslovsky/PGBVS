@@ -2057,9 +2057,8 @@ arma::mat update_zeta( arma::vec Y, arma::vec W, arma::vec beta_temp, arma::mat 
   return zeta_update;
 }
 
+}
 
-
-}  // For namespace 'help'
 
 // Function :: MCMC algorithm
 // [[Rcpp::export]]
@@ -2184,7 +2183,7 @@ List bvsPGcpp2(
         //   List return_between_beta = help::between_step_beta( Y, W_temp, beta_temp, v_temp, t2_temp, Ustar, Xbar, Ustar_dems, xi_temp, Z, K_temp, fixed_avail, Gamma_temp, zeta_temp, subject, a, b );
         //   beta_temp = as<arma::vec>( return_between_beta[ 0 ] );
         //   v_temp = as<arma::vec>( return_between_beta[ 1 ] );
-        // }
+         }
         
         // Within beta 
         beta_temp = help::within_beta( Y, W_temp, subject, beta_temp, t2_temp, v_temp, Ustar, Xbar, Ustar_dems, xi_temp, Z, K_temp, Gamma_temp, zeta_temp, subject_dems, mu_temp);
@@ -2307,5 +2306,6 @@ List bvsPGcpp2(
     
     return output ;
   }
+
   
   
