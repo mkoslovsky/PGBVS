@@ -13,19 +13,3 @@ horsePGcpp <- function(iterations, thin, Y, W, subject, subject_dems, Ustar, Ust
     .Call(`_PGBVS_horsePGcpp`, iterations, thin, Y, W, subject, subject_dems, Ustar, Ustar_dems, Xbar, Z, beta, sigma_beta, tau_beta, vartheta_beta, A_beta, xi, mu, K, sigma_kappa, tau_kappa, vartheta_kappa, A_kappa, Gamma, zeta, V_gamma, gamma_0, m_0, v_0, tau)
 }
 
-rcpparma_hello_world <- function() {
-    .Call(`_PGBVS_rcpparma_hello_world`)
-}
-
-rcpparma_outerproduct <- function(x) {
-    .Call(`_PGBVS_rcpparma_outerproduct`, x)
-}
-
-rcpparma_innerproduct <- function(x) {
-    .Call(`_PGBVS_rcpparma_innerproduct`, x)
-}
-
-rcpparma_bothproducts <- function(x) {
-    .Call(`_PGBVS_rcpparma_bothproducts`, x)
-}
-
