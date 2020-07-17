@@ -122,10 +122,56 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// loo_prep
+arma::mat loo_prep(arma::vec Y, arma::vec subject, arma::vec subject_dems, arma::mat Ustar, arma::vec Ustar_dems, arma::mat Xbar, arma::mat Z, arma::mat beta, arma::mat xi, arma::mat K, arma::cube Gamma, arma::cube zeta);
+RcppExport SEXP _PGBVS_loo_prep(SEXP YSEXP, SEXP subjectSEXP, SEXP subject_demsSEXP, SEXP UstarSEXP, SEXP Ustar_demsSEXP, SEXP XbarSEXP, SEXP ZSEXP, SEXP betaSEXP, SEXP xiSEXP, SEXP KSEXP, SEXP GammaSEXP, SEXP zetaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type subject(subjectSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type subject_dems(subject_demsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Ustar(UstarSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type Ustar_dems(Ustar_demsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Xbar(XbarSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type K(KSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type Gamma(GammaSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type zeta(zetaSEXP);
+    rcpp_result_gen = Rcpp::wrap(loo_prep(Y, subject, subject_dems, Ustar, Ustar_dems, Xbar, Z, beta, xi, K, Gamma, zeta));
+    return rcpp_result_gen;
+END_RCPP
+}
+// prob_MCMC
+arma::mat prob_MCMC(arma::vec Y, arma::vec subject, arma::vec subject_dems, arma::mat Ustar, arma::vec Ustar_dems, arma::mat Xbar, arma::mat Z, arma::mat beta, arma::mat xi, arma::mat K, arma::cube Gamma, arma::cube zeta);
+RcppExport SEXP _PGBVS_prob_MCMC(SEXP YSEXP, SEXP subjectSEXP, SEXP subject_demsSEXP, SEXP UstarSEXP, SEXP Ustar_demsSEXP, SEXP XbarSEXP, SEXP ZSEXP, SEXP betaSEXP, SEXP xiSEXP, SEXP KSEXP, SEXP GammaSEXP, SEXP zetaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type subject(subjectSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type subject_dems(subject_demsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Ustar(UstarSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type Ustar_dems(Ustar_demsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Xbar(XbarSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type K(KSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type Gamma(GammaSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type zeta(zetaSEXP);
+    rcpp_result_gen = Rcpp::wrap(prob_MCMC(Y, subject, subject_dems, Ustar, Ustar_dems, Xbar, Z, beta, xi, K, Gamma, zeta));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_PGBVS_bvsPGcpp", (DL_FUNC) &_PGBVS_bvsPGcpp, 48},
     {"_PGBVS_bvsPGcpp2", (DL_FUNC) &_PGBVS_bvsPGcpp2, 48},
+    {"_PGBVS_loo_prep", (DL_FUNC) &_PGBVS_loo_prep, 12},
+    {"_PGBVS_prob_MCMC", (DL_FUNC) &_PGBVS_prob_MCMC, 12},
     {NULL, NULL, 0}
 };
 

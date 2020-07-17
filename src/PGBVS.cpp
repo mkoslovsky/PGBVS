@@ -2556,3 +2556,105 @@ List bvsPGcpp2(
   return output ;
 }
 
+// Preps input for 'loo' package in R to obtain approximate leave-one-out cross-validation
+// [[Rcpp::export]]
+arma::mat loo_prep( 
+    arma::vec Y,                // Y - Vector of outcomes. Indexed ij.
+    arma::vec subject,          // subject - Vector that indicates which observations come from a subject. Elements are ij
+    arma::vec subject_dems,     // subject_dems - Input vector of dimensions for each subject in the data. Element is equal to the starting indicies for corresponding n. Last term is the number of observations
+    arma::mat Ustar,            // Ustar - Matrix of spline functions. Rows indexed by ij. Columns indexed by sum r_p over p. ( Should be a list if r_p != r_p' )
+    arma::vec Ustar_dems,       // Ustar_dems - Input vector of dimensions for each spline function. Element is equal to starting indicies for corresponding p. Last term is number of columns. Ustar_dems[ 0 ] = 0 and length = P + 1
+    arma::mat Xbar,             // Xbar - Matrix of barX. Rows indexed by ij. Columns indexed by 2P ( x1u, x1, x2u, x2,...xPu, xP )
+    arma::mat Z,                // Z - Matrix of random covariates for each subject. Columns indexed by D. Rows indexed by ij
+    arma::mat beta,             // beta - Matrix of MCMC samples for beta. Rows indexed by beta_temp. Columns indexed by MCMC sample.
+    arma::mat xi,               // xi - Matrix of MCMC samples for parameter expansion for beta. Rows indexed by xi_temp. Columns indexed by MCMC sample.
+    arma::mat K,                // K - Matrix of MCMC samples for K. Rows indexed by K. Columns indexed by MCMC sample.
+    arma::cube Gamma,           // Gamma - Array of MCMC samples for Gamma. x and y are indexed by Gamma_temp. z indexed by MCMC sample
+    arma::cube zeta            // zeta - Array of MCMC samples for zeta.  x and y indexed by zeta_temp. z indexed by MCMC sample
+){
+  int T = beta.n_rows;
+  int N = Y.size();
+  int iterations = beta.n_cols;
+  int obs = Ustar.n_rows; 
+  arma::mat sX( obs, T );
+  sX.zeros();
+  int D = K.n_rows;
+  
+  arma::mat loo_mat( iterations, N );
+  loo_mat.zeros();
+  
+  for( int iter = 0; iter < iterations; ++iter){
+    
+    arma::mat K_mat( D, D );
+    K_mat.zeros();  
+    
+    // Make sX
+    sX =  help::make_sX( Ustar, xi.col( iter ), Xbar, Ustar_dems );
+    
+    // Make K matrix
+    for( int i = 0; i < D; ++i ){
+      K_mat( i, i ) = K( i, iter );
+    }
+    
+    // Make psi and calculate the log-likelihood contribution 
+    for( int i = 0; i < obs; ++i ){
+      int sub = subject[ i ];
+      arma::mat psi_val = sX.row( i )*beta.col( iter ) + Z.row( i )*K_mat*Gamma.slice( iter )*zeta.slice( iter ).row( sub ).t() ; 
+      
+      loo_mat( iter, i ) =  -log( 1 + exp( psi_val[ 0 ] ) ) + Y[ i ]*psi_val[0];
+    }
+  }
+  return( loo_mat );
+}
+
+// Provides probability of outcome for each individual at each MCMC iteration 
+// [[Rcpp::export]]
+arma::mat prob_MCMC( 
+    arma::vec Y,                // Y - Vector of outcomes. Indexed ij.
+    arma::vec subject,          // subject - Vector that indicates which observations come from a subject. Elements are ij
+    arma::vec subject_dems,     // subject_dems - Input vector of dimensions for each subject in the data. Element is equal to the starting indicies for corresponding n. Last term is the number of observations
+    arma::mat Ustar,            // Ustar - Matrix of spline functions. Rows indexed by ij. Columns indexed by sum r_p over p. ( Should be a list if r_p != r_p' )
+    arma::vec Ustar_dems,       // Ustar_dems - Input vector of dimensions for each spline function. Element is equal to starting indicies for corresponding p. Last term is number of columns. Ustar_dems[ 0 ] = 0 and length = P + 1
+    arma::mat Xbar,             // Xbar - Matrix of barX. Rows indexed by ij. Columns indexed by 2P ( x1u, x1, x2u, x2,...xPu, xP )
+    arma::mat Z,                // Z - Matrix of random covariates for each subject. Columns indexed by D. Rows indexed by ij
+    arma::mat beta,             // beta - Matrix of MCMC samples for beta. Rows indexed by beta_temp. Columns indexed by MCMC sample.
+    arma::mat xi,               // xi - Matrix of MCMC samples for parameter expansion for beta. Rows indexed by xi_temp. Columns indexed by MCMC sample.
+    arma::mat K,                // K - Matrix of MCMC samples for K. Rows indexed by K. Columns indexed by MCMC sample.
+    arma::cube Gamma,           // Gamma - Array of MCMC samples for Gamma. x and y are indexed by Gamma_temp. z indexed by MCMC sample
+    arma::cube zeta            // zeta - Array of MCMC samples for zeta.  x and y indexed by zeta_temp. z indexed by MCMC sample
+){
+  int T = beta.n_rows;
+  int N = Y.size();
+  int iterations = beta.n_cols;
+  int obs = Ustar.n_rows; 
+  arma::mat sX( obs, T );
+  sX.zeros();
+  int D = K.n_rows;
+  
+  arma::mat prob_mat( iterations, N );
+  prob_mat.zeros();
+  
+  for( int iter = 0; iter < iterations; ++iter){
+    
+    arma::mat K_mat( D, D );
+    K_mat.zeros();  
+    
+    // Make sX
+    sX =  help::make_sX( Ustar, xi.col( iter ), Xbar, Ustar_dems );
+    
+    // Make K matrix
+    for( int i = 0; i < D; ++i ){
+      K_mat( i, i ) = K( i, iter );
+    }
+    
+    // Make psi and calculate the log-likelihood contribution 
+    for( int i = 0; i < obs; ++i ){
+      int sub = subject[ i ];
+      arma::mat psi_val = sX.row( i )*beta.col( iter ) + Z.row( i )*K_mat*Gamma.slice( iter )*zeta.slice( iter ).row( sub ).t() ; 
+      
+      prob_mat( iter, i ) =  exp( psi_val[ 0 ] )/(1 + exp( psi_val[ 0 ] ));
+    }
+  }
+  return( prob_mat );
+}
+  
