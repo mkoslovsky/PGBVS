@@ -62,7 +62,7 @@ To analyze these data, we run the core function for our method `bvsPG()` and ass
 test <- bvsPG( iterations = 7500, DP_beta = T, DP_kappa = T,  thin = 10,  Y = data$Y, n_i = data$n_i, Z = data$Z, X = data$X , U = data$U , seed = 1)
 ```
  ```{r, echo = FALSE }
- file1 <- system.file("extdata", "VignetteExample.RData", package = "PGBVS")
+ file1 <- system.file("extdata", "test.rda", package = "PGBVS")
  load( file1 )
  ```
 ```{r,  include = F  }
