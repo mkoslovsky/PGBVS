@@ -392,8 +392,8 @@ double log_like_pg( arma::vec Y, arma::vec W, arma::vec beta_temp, arma::mat Ust
   for( int i = 0; i < obs; ++i ){
     int sub = subject[ i ];
     arma::mat psi_val = sX.row( i )*beta_temp + Z.row( i )*K_mat*Gamma_temp*zeta_temp.row( sub ).t() ; 
-    double Winv = 1/W[i];
-    log_like += -0.50*log( 2*M_PI*Winv ) - 1/( 2*Winv )*pow( H[i] - psi_val[0], 2 );
+ 
+    log_like += -0.50*log( 2*M_PI*W[i] ) - 1/( 2*W[i] )*pow( H[i] - psi_val[0], 2 );
   }
   
   // Return output
@@ -443,8 +443,8 @@ arma::vec like_pg_beta_clust( arma::vec Y, arma::vec W, arma::vec beta_temp, arm
       psi_val( j, 0 ) = psi_fixed[ 0 ] + psi_random[ 0 ];
     }
     
-    double Winv = 1/W[i];
-    like += -0.50*log( 2*M_PI*Winv ) - 1/( 2*Winv )*pow( H[i] - psi_val, 2 );
+ 
+    like += -0.50*log( 2*M_PI*W[i] ) - 1/( 2*W[i] )*pow( H[i] - psi_val, 2 );
   }
   
   // Return output
@@ -486,8 +486,8 @@ arma::vec like_pg_kappa_clust( arma::vec Y, arma::vec W, arma::vec beta_temp, ar
       psi_val( d, 0 ) = psi_fixed[ 0 ] + psi_random[ 0 ];
     }
     
-    double Winv = 1/W[i];
-    like += -0.50*log( 2*M_PI*Winv ) - 1/( 2*Winv )*pow( H[i] - psi_val, 2 );
+ 
+    like += -0.50*log( 2*M_PI*W[i] ) - 1/( 2*W[i] )*pow( H[i] - psi_val, 2 );
   }
   
   // Return output
