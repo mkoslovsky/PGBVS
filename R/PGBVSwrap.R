@@ -178,7 +178,7 @@ select_perf <- function( selected, truth ){
 }
 
 # Evaluate clustering and compare performance for simulated data if provided 
-clustering <- function( MCMC = NULL, true_clusters = NULL, loss = "lowerBoundVariationOfInformation" ){
+clustering <- function( MCMC = NULL, true_clusters = NULL, loss = "VI" ){
   
   if( is.null( MCMC ) ){
     stop("Missing input: Please provide a matrix of samples.")
