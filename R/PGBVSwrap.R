@@ -188,7 +188,7 @@ clustering <- function( MCMC = NULL, true_clusters = NULL, loss = "lowerBoundVar
     stop("Missing input: Please provide a loss permitted by the 'salso' function.")
   }
   
-  library(sdols)
+  library(salso)
   library(mcclust)
   
   # Get clusters 
