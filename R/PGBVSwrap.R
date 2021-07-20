@@ -192,8 +192,8 @@ clustering <- function( MCMC = NULL, true_clusters = NULL, loss = "lowerBoundVar
   library(mcclust)
   
   # Get clusters 
-  probabilities <- expectedPairwiseAllocationMatrix( MCMC )
-  cluster <- salso( probabilities, loss = loss )
+  #probabilities <- expectedPairwiseAllocationMatrix( MCMC )
+  cluster <- salso( MCMC, loss = loss )
   
   # Return results
   if( !is.null( true_clusters ) ){
