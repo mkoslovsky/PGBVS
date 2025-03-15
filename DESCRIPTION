@@ -1,6 +1,6 @@
 Package: PGBVS
 Type: Package
-Title: PGBVS
+Title: PGBVS - BVS for logistic regression models with varying-coefficients using spiked Dirichlet processes 
 Version: 1.0
 Date: 2019-03-30
 Author: Matt Koslovsky
